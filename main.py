@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 import os
 
+from PIL import ImageGrab
 from collections import deque
 
 clear = lambda: os.system('cls')
@@ -23,9 +24,17 @@ class Pikachu_guide():
         self.w = 40
         self.h = 50
         self.path = path
+        self.img = self.read_img()
         self.coors, self.x, self.y = self.find_coordinates()
         self.map = self.convert_into_array()
-        
+
+    def read_img(self):
+
+        screen = cv.cvtColor(np.array(ImageGrab.grab()), cv.COLOR_RGB2BGR)
+        screen = screen[226:1014,351:1547,:]
+        img = cv.resize(screen, (956, 630))
+
+        return img
     def remove_dup_coors(self, loc):
         temp_list = list(zip(*loc[::-1]))
 
@@ -47,10 +56,8 @@ class Pikachu_guide():
         return list_point
 
     def find_coordinates(self):
-        img = cv.imread(self.path)
-        img = cv.resize(img, (956, 630))
 
-        img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        img_gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
 
         coors = []
         x = []
@@ -70,8 +77,8 @@ class Pikachu_guide():
         return coors, (min(x), max(x)), (min(y), max(y))
     
     def coor_to_index(self, point):
-        x_coor = (point[0] - self.x[0]) // (40)
-        y_coor = (point[1] - self.y[0]) // (50)
+        x_coor = (point[0] - self.x[0]) // (self.w)
+        y_coor = (point[1] - self.y[0]) // (self.h)
         return int(x_coor) + 1, int(y_coor) + 1
     
     def convert_into_array(self):
@@ -132,7 +139,7 @@ class Pikachu_guide():
             p1 = self.coor_to_index(piece[i])
             for j in range(i + 1, len(piece)):
                 p2 = self.coor_to_index(piece[j])
-
+                
                 path = self.find_path((p1[1], p1[0]), (p2[1], p2[0]))
                 if path and self.count_straight(path) <= 2:
                     return (piece[i], piece[j]), path
@@ -141,11 +148,9 @@ class Pikachu_guide():
 
     def guide(self):
         print('----- Start -------')
-        img = cv.imread(self.path)
-        img = cv.resize(img, (956, 630))
 
         for i, piece in enumerate(self.coors):
-            copy = img.copy()
+            copy = self.img.copy()
             pair = self.get_matching(piece)
 
             if pair:
@@ -157,37 +162,39 @@ class Pikachu_guide():
                 cv.imshow('img', copy)
                 key = cv.waitKey(0)
 
-                # clear()
-                # if key == ord('q'):
-                #     break
+                clear()
+                if key == ord('q'):
+                    break
     
     def display(self):
-        img = cv.imread(self.path)
-        img = cv.resize(img, (956, 630))
-
         for piece in self.coors:
-            copy = img.copy()
+            copy = self.img.copy()
             for pt in piece:
-                print(pt)
                 cv.rectangle(copy, pt, (pt[0] + self.w, pt[1] + self.h), (0,0,255), 2)
 
-            cv.imshow('img', copy)
-            key = cv.waitKey(0)
+            if piece:
+                cv.imshow('img', copy)
+                key = cv.waitKey(0)
 
-            clear()
-            if key == ord('q'):
-                break
+                clear()
+                if key == ord('q'):
+                    break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--img_path', default='./game_play.jpg')
+    parser.add_argument('--type', type=int, default=0)
     args = parser.parse_args()
 
     game = Pikachu_guide(path=args.img_path)
-    # path = game.find_path((7, 16), (9, 3))
+
+    # path = game.find_path((3, 14), (9, 4))
     # count = game.count_straight(path)
-    # print(path, count)
+    # print(game.map[(9, 4)], game.map[(3, 14)], path, count)
     # print(game.map)
-    game.guide()
-    # game.display()
+
+    if args.type == 0:
+        game.guide()
+    else:
+        game.display()
 
