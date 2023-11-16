@@ -20,10 +20,9 @@ def is_one_path(p1, p2):
     return not (x1 and x2) 
 
 class Pikachu_guide():
-    def __init__(self, path) -> None:
+    def __init__(self) -> None:
         self.w = 40
         self.h = 50
-        self.path = path
         self.img = self.read_img()
         self.coors, self.x, self.y = self.find_coordinates()
         self.map = self.convert_into_array()
@@ -182,11 +181,10 @@ class Pikachu_guide():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--img_path', default='./game_play.jpg')
     parser.add_argument('--type', type=int, default=0)
     args = parser.parse_args()
 
-    game = Pikachu_guide(path=args.img_path)
+    game = Pikachu_guide()
 
     # path = game.find_path((3, 14), (9, 4))
     # count = game.count_straight(path)
