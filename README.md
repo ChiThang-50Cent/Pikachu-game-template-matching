@@ -4,7 +4,7 @@ It'll find some matching pieces or show the whole same piece.
 
 ## Usage
 
-Play at this link ![link](https://gamevui.vn/pikachu/game)
+Play at this ![link](https://gamevui.vn/pikachu/game)
 This repo uses fixed size screen (956 x 630) like below:
 
   ![image](https://github.com/ChiThang-50Cent/Pikachu-game-template-matching/assets/62085284/7fd14b92-8f84-448f-b25c-bc270cba9879)
