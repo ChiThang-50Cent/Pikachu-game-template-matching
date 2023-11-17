@@ -14,3 +14,6 @@ Create an cmd, cd to main file (main.py), move the cmd window beside game screen
 #### Step 2: 
 Run ```python main.py``` for finding matching piece, press 'q' to quit and any key for finding next piece</br>
 Add ```--type=1``` for show all same piece, order by index of piece.
+
+## Demo
+![Demo](https://github.com/ChiThang-50Cent/Pikachu-game-template-matching/blob/main/screen-capture.webm)
